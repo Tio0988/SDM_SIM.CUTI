@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Cuti - HR Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 28px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            background: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.15);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 13px;
+        }
+
+        .form-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .table-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            margin-right: 5px;
+            transition: all 0.3s;
+        }
+
+        .btn-approve {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-approve:hover,
+        .btn-reject:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            min-width: 300px;
+        }
+
+        .notification.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.success {
+            border-left: 4px solid #28a745;
+        }
+
+        .notification.error {
+            border-left: 4px solid #dc3545;
+        }
+
+        .calendar-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .leave-type-legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 Sistem Manajemen Cuti SDM</h1>
+            <div class="user-info">
+                <div>
+                    <div style="font-weight: 600;">Admin HR</div>
+                    <div style="font-size: 12px; color: #999;">Human Resources</div>
+                </div>
+                <div class="user-avatar">HR</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button class="tab-btn" onclick="switchTab('ajukan')">➕ Ajukan Cuti</button>
+            <button class="tab-btn" onclick="switchTab('approval')">✅ Persetujuan</button>
+            <button class="tab-btn" onclick="switchTab('riwayat')">📋 Riwayat Cuti</button>
+            <button class="tab-btn" onclick="switchTab('kalender')">📅 Kalender Tim</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <h3>Sisa Cuti Tahunan</h3>
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">dari 12 hari</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Cuti Digunakan</h3>
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">hari tahun ini</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Cuti Pending</h3>
+                    <div class="stat-value" id="pendingCount">3</div>
+                    <div class="stat-label">menunggu persetujuan</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Tim Cuti Hari Ini</h3>
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">karyawan</div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <h2 style="margin-bottom: 20px;">Pengajuan Cuti Terbaru</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tanggal Pengajuan</th>
+                            <th>Jenis Cuti</th>
+                            <th>Tanggal Mulai</th>
+                            <th>Tanggal Selesai</th>
+                            <th>Durasi</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashboardLeaveTable">
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #999;">Belum ada pengajuan cuti</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Ajukan Cuti Tab -->
+        <div id="ajukan" class="tab-content">
+            <div class="form-card">
+                <h2 style="margin-bottom: 25px; color: #667eea;">📝 Form Pengajuan Cuti</h2>
+                <form id="leaveForm">
+                    <div class="form-group">
+                        <label for="leaveType">Jenis Cuti *</label>
+                        <select id="leaveType" required>
+                            <option value="">Pilih jenis cuti</option>
+                            <option value="Cuti Tahunan">Cuti Tahunan</option>
+                            <option value="Cuti Sakit">Cuti Sakit</option>
+                            <option value="Cuti Melahirkan">Cuti Melahirkan</option>
+                            <option value="Cuti Menikah">Cuti Menikah</option>
+                            <option value="Cuti Keperluan Penting">Cuti Keperluan Penting</option>
+                            <option value="Cuti Ibadah">Cuti Ibadah (Haji/Umroh)</option>
+                        </select>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="startDate">Tanggal Mulai *</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="endDate">Tanggal Selesai *</label>
+                            <input type="date" id="endDate" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="duration">Durasi (hari kerja)</label>
+                        <input type="number" id="duration" readonly style="background: #f8f9fa;">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reason">Alasan Cuti *</label>
+                        <textarea id="reason" placeholder="Jelaskan alasan pengajuan cuti..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="replacement">Nama Pengganti Sementara</label>
+                        <input type="text" id="replacement" placeholder="Masukkan nama karyawan pengganti">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contact">Kontak Darurat Saat Cuti</label>
+                        <input type="tel" id="contact" placeholder="Nomor telepon yang bisa dihubungi">
+                    </div>
+
+                    <button type="submit" class="btn">🚀 Ajukan Cuti</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Approval Tab -->
+        <div id="approval" class="tab-content">
+            <div class="table-container">
+                <h2 style="margin-bottom: 20px;">✅ Persetujuan Cuti Karyawan</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama Karyawan</th>
+                            <th>Jenis Cuti</th>
+                            <th>Tanggal</th>
+                            <th>Durasi</th>
+                            <th>Alasan</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="approvalTable">
+                        <tr>
+                            <td>Budi Santoso</td>
+                            <td>Cuti Tahunan</td>
+                            <td>05/11/2025 - 07/11/2025</td>
+                            <td>3 hari</td>
+                            <td>Liburan keluarga</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td>
+                                <button class="action-btn btn-approve" onclick="approveLeave(this, 'Budi Santoso')">Setujui</button>
+                                <button class="action-btn btn-reject" onclick="rejectLeave(this, 'Budi Santoso')">Tolak</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Siti Rahayu</td>
+                            <td>Cuti Sakit</td>
+                            <td>01/11/2025 - 02/11/2025</td>
+                            <td>2 hari</td>
+                            <td>Demam dan flu</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td>
+                                <button class="action-btn btn-approve" onclick="approveLeave(this, 'Siti Rahayu')">Setujui</button>
+                                <button class="action-btn btn-reject" onclick="rejectLeave(this, 'Siti Rahayu')">Tolak</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Ahmad Fauzi</td>
+                            <td>Cuti Menikah</td>
+                            <td>15/11/2025 - 17/11/2025</td>
+                            <td>3 hari</td>
+                            <td>Acara pernikahan</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td>
+                                <button class="action-btn btn-approve" onclick="approveLeave(this, 'Ahmad Fauzi')">Setujui</button>
+                                <button class="action-btn btn-reject" onclick="rejectLeave(this, 'Ahmad Fauzi')">Tolak</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Riwayat Tab -->
+        <div id="riwayat" class="tab-content">
+            <div class="table-container">
+                <h2 style="margin-bottom: 20px;">📋 Riwayat Pengajuan Cuti</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tanggal Pengajuan</th>
+                            <th>Jenis Cuti</th>
+                            <th>Periode</th>
+                            <th>Durasi</th>
+                            <th>Alasan</th>
+                            <th>Status</th>
+                            <th>Disetujui Oleh</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTable">
+                        <tr>
+                            <td colspan="8" style="text-align: center; color: #999;">Belum ada riwayat cuti</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Kalender Tab -->
+        <div id="kalender" class="tab-content">
+            <div class="calendar-container">
+                <h2 style="margin-bottom: 20px;">📅 Kalender Cuti Tim</h2>
+                <p style="color: #666; margin-bottom: 20px;">Melihat jadwal cuti semua anggota tim untuk koordinasi yang lebih baik</p>
+
+                <div class="leave-type-legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #667eea;"></div>
+                        <span>Cuti Tahunan</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f39c12;"></div>
+                        <span>Cuti Sakit</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #e74c3c;"></div>
+                        <span>Cuti Melahirkan</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #9b59b6;"></div>
+                        <span>Cuti Menikah</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #1abc9c;"></div>
+                        <span>Cuti Ibadah</span>
+                    </div>
+                </div>
+
+                <div id="calendarView" style="margin-top: 30px;">
+                    <table style="width: 100%; border: 1px solid #e0e0e0;">
+                        <thead>
+                            <tr style="background: #667eea; color: white;">
+                                <th style="padding: 15px;">Karyawan</th>
+                                <th style="padding: 15px;">01 Nov</th>
+                                <th style="padding: 15px;">02 Nov</th>
+                                <th style="padding: 15px;">03 Nov</th>
+                                <th style="padding: 15px;">04 Nov</th>
+                                <th style="padding: 15px;">05 Nov</th>
+                                <th style="padding: 15px;">06 Nov</th>
+                                <th style="padding: 15px;">07 Nov</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-weight: 600;">Budi Santoso</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td style="background: #667eea20; text-align: center;">📅</td>
+                                <td style="background: #667eea20; text-align: center;">📅</td>
+                                <td style="background: #667eea20; text-align: center;">📅</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 600;">Siti Rahayu</td>
+                                <td style="background: #f39c1220; text-align: center;">🤒</td>
+                                <td style="background: #f39c1220; text-align: center;">🤒</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 600;">Ahmad Fauzi</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <div id="notificationMessage"></div>
+    </div>
+
+    <script>
+        let leaveRequests = [];
+        let leaveIdCounter = 1;
+
+        // Switch between tabs
+        function switchTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Calculate duration between dates (excluding weekends)
+        document.getElementById('startDate').addEventListener('change', calculateDuration);
+        document.getElementById('endDate').addEventListener('change', calculateDuration);
+
+        function calculateDuration() {
+            const startDate = new Date(document.getElementById('startDate').value);
+            const endDate = new Date(document.getElementById('endDate').value);
+
+            if (startDate && endDate && startDate <= endDate) {
+                let days = 0;
+                let currentDate = new Date(startDate);
+
+                while (currentDate <= endDate) {
+                    const dayOfWeek = currentDate.getDay();
+                    if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Exclude Sunday (0) and Saturday (6)
+                        days++;
+                    }
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+
+                document.getElementById('duration').value = days;
+            }
+        }
+
+        // Handle leave form submission
+        document.getElementById('leaveForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const leaveData = {
+                id: leaveIdCounter++,
+                submissionDate: new Date().toLocaleDateString('id-ID'),
+                type: document.getElementById('leaveType').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                duration: document.getElementById('duration').value,
+                reason: document.getElementById('reason').value,
+                replacement: document.getElementById('replacement').value,
+                contact: document.getElementById('contact').value,
+                status: 'Pending',
+                approvedBy: '-'
+            };
+
+            leaveRequests.push(leaveData);
+            updateDashboard();
+            updateHistory();
+
+            showNotification('Pengajuan cuti berhasil dikirim! Menunggu persetujuan.', 'success');
+
+            // Reset form
+            this.reset();
+            document.getElementById('duration').value = '';
+        });
+
+        // Update dashboard table
+        function updateDashboard() {
+            const tbody = document.getElementById('dashboardLeaveTable');
+            tbody.innerHTML = '';
+
+            if (leaveRequests.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #999;">Belum ada pengajuan cuti</td></tr>';
+                return;
+            }
+
+            leaveRequests.slice().reverse().forEach(leave => {
+                const row = `
+                    <tr>
+                        <td>${leave.submissionDate}</td>
+                        <td>${leave.type}</td>
+                        <td>${new Date(leave.startDate).toLocaleDateString('id-ID')}</td>
+                        <td>${new Date(leave.endDate).toLocaleDateString('id-ID')}</td>
+                        <td>${leave.duration} hari</td>
+                        <td><span class="status-badge status-${leave.status.toLowerCase()}">${leave.status}</span></td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+
+            // Update pending count
+            const pendingCount = leaveRequests.filter(l => l.status === 'Pending').length;
+            document.getElementById('pendingCount').textContent = pendingCount;
+        }
+
+        // Update history table
+        function updateHistory() {
+            const tbody = document.getElementById('historyTable');
+            tbody.innerHTML = '';
+
+            if (leaveRequests.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #999;">Belum ada riwayat cuti</td></tr>';
+                return;
+            }
+
+            leaveRequests.slice().reverse().forEach(leave => {
+                const row = `
+                    <tr>
+                        <td>#${leave.id}</td>
+                        <td>${leave.submissionDate}</td>
+                        <td>${leave.type}</td>
+                        <td>${new Date(leave.startDate).toLocaleDateString('id-ID')} - ${new Date(leave.endDate).toLocaleDateString('id-ID')}</td>
+                        <td>${leave.duration} hari</td>
+                        <td>${leave.reason}</td>
+                        <td><span class="status-badge status-${leave.status.toLowerCase()}">${leave.status}</span></td>
+                        <td>${leave.approvedBy}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // Approve leave
+        function approveLeave(button, employeeName) {
+            const row = button.closest('tr');
+            const statusCell = row.querySelector('td:nth-child(6)');
+            statusCell.innerHTML = '<span class="status-badge status-approved">Approved</span>';
+            row.querySelector('td:last-child').innerHTML = '<span style="color: #28a745; font-weight: 600;">✓ Disetujui</span>';
+
+            showNotification(`Cuti ${employeeName} telah disetujui`, 'success');
+        }
+
+        // Reject leave
+        function rejectLeave(button, employeeName) {
+            const row = button.closest('tr');
+            const statusCell = row.querySelector('td:nth-child(6)');
+            statusCell.innerHTML = '<span class="status-badge status-rejected">Rejected</span>';
+            row.querySelector('td:last-child').innerHTML = '<span style="color: #dc3545; font-weight: 600;">✗ Ditolak</span>';
+
+            showNotification(`Cuti ${employeeName} telah ditolak`, 'error');
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            const messageDiv = document.getElementById('notificationMessage');
+
+            messageDiv.textContent = message;
+            notification.className = `notification ${type} show`;
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Cuti SDM</title>
+    <style>
+        body { font-family:sans-serif; background:#ecf0f3; margin:0; }
+        .container { max-width:1000px; margin:40px auto; background:white; border-radius:10px; box-shadow:0 4px 20px #0001; padding:30px; }
+        .login-container { max-width:400px; margin:70px auto; background:white; border-radius:12px; box-shadow:0 2px 12px #0002; padding:35px; }
+        h2 { color:#667eea }
+        label { margin-top:7px; display:block; }
+        input[type=text],input[type=password],input[type=date],input[type=number],input[type=tel],select,textarea {
+            width:100%; padding:10px; margin-bottom:18px; border:1.2px solid #ccd; border-radius:6px;
+        }
+        button { background:linear-gradient(135deg,#667eea,#764ba2); color:white; border:none; padding:12px 32px;
+            border-radius:8px; font-size:16px; font-weight:600; cursor:pointer; margin-top:12px;
+        }
+        .tabs { display:flex; gap:4px; margin-bottom:20px;}
+        .tab-btn { background:#f4f4fa;border:none; padding:12px 28px;border-radius:9px;cursor:pointer;font-weight:600; }
+        .tab-btn.active { background:linear-gradient(135deg,#667eea,#764ba2);color:white; }
+        .tab-content { display:none; }
+        .tab-content.active,.adminonly,.employeeonly { display:block; }
+        .dashboard-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-bottom:26px;}
+        .stat-card { background:#f7f8fa;padding:18px;border-radius:14px;box-shadow:0 2px 8px #667eea11; }
+        table { width:100%; border-collapse:collapse; margin-top:10px;}
+        th,td { border-bottom:1px solid #eee; padding:10px;}
+        th { background:#f7f7fc;color:#555 }
+        .status-badge { border-radius:11px; padding:4px 12px;font-size:13px;}
+        .status-pending { background:#fff3cd;color:#664d03;}
+        .status-approved { background:#d4edda;color:#155724 }
+        .status-rejected { background:#f8d7da;color:#721c24 }
+        .action-btn { border:none; border-radius:6px; padding:7px 16px; font-size:13px; font-weight:600; cursor:pointer;}
+        .btn-approve { background:#28a745;color:white; }
+        .btn-reject { background:#dc3545;color:white; }
+        .logout-btn {float:right; margin-top:0; background:#ea587c;}
+        @media(max-width:700px){.dashboard-grid{grid-template-columns:1fr;}}
+    </style>
+</head>
+<body>
+<div id="main-content"></div>
+
+<script>
+// Dummy user database
+const users = [
+    {username: "admin", password: "admin123", role: "admin"},
+    {username: "karyawan1", password: "abc123", role: "karyawan"},
+    {username: "karyawan2", password: "xyz456", role: "karyawan"}
+];
+// Dummy leave requests database (akan disimpan di browser)
+let leaves = JSON.parse(localStorage.getItem("leaves")) || [];
+let loggedInUser = JSON.parse(localStorage.getItem("user")) || null;
+
+// Simpan leaves ke localStorage
+function saveLeaves() { localStorage.setItem("leaves", JSON.stringify(leaves)); }
+
+// Form Login
+function showLogin() {
+    document.getElementById("main-content").innerHTML = `
+    <div class="login-container">
+      <h2>Login Sistem Manajemen Cuti SDM</h2>
+      <form id="loginForm">
+        <label>Username</label>
+        <input type="text" id="username" required autocomplete="username">
+        <label>Password</label>
+        <input type="password" id="password" required autocomplete="current-password">
+        <button type="submit">MASUK</button>
+      </form>
+      <div id="errorMsg" style="color:#e74c3c;margin-top:12px;"></div>
+    </div>`;
+    document.getElementById("loginForm").onsubmit = function(e){
+        e.preventDefault();
+        let user = users.find(u=>u.username===username.value && u.password===password.value);
+        if(user){
+            loggedInUser = user;
+            localStorage.setItem("user", JSON.stringify(user));
+            showApp();
+        } else {
+            document.getElementById("errorMsg").textContent = "Username atau password salah!";
+        }
+    }
+}
+
+// Logout
+function logout(){
+    localStorage.removeItem("user");
+    loggedInUser = null;
+    showLogin();
+}
+
+// Tampilkan aplikasi utama (setelah login)
+function showApp(){
+    let isAdmin = loggedInUser.role=="admin";
+    let nav = `
+      <button class="logout-btn" onclick="logout()">Logout</button>
+      <div style="font-weight:700;color:#667eea;font-size:21px">
+        Hi, ${loggedInUser.role=="admin"? "Admin" : "Karyawan"} <span style="color:#b07fff;">${loggedInUser.username}</span></div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('dashboard',this)">Dashboard</button>
+        <button class="tab-btn" onclick="switchTab('ajukan',this)">Ajukan Cuti</button>
+        <button class="tab-btn" onclick="switchTab('riwayat',this)">Riwayat</button>
+        ${isAdmin ? `<button class="tab-btn" onclick="switchTab('approval',this)">Persetujuan</button>`:""}
+      </div>
+      <div class="tab-content active" id="dashboard"></div>
+      <div class="tab-content" id="ajukan"></div>
+      <div class="tab-content" id="riwayat"></div>
+      ${isAdmin ? `<div class="tab-content" id="approval"></div>`:""}
+    `;
+    document.getElementById("main-content").innerHTML = `<div class="container">${nav}</div>`;
+    showDashboard();
+    showAjukan();
+    showRiwayat();
+    if(isAdmin) showApproval();
+}
+
+// Dashboard
+function showDashboard() {
+    let isAdmin = loggedInUser.role=="admin";
+    let userLeaves = isAdmin? leaves : leaves.filter(l=>l.username===loggedInUser.username);
+    let sisaCuti = 12 - userLeaves.filter(l=>l.status=="Approved").reduce((a,b)=>a+Number(b.duration),0);
+    let pending = userLeaves.filter(l=>l.status=="Pending").length;
+    let digunakan = 12-sisaCuti;
+    let cutiHariIni = userLeaves.filter(l=>inDateRange(new Date(),new Date(l.startDate), new Date(l.endDate)) && l.status=="Approved").length;
+    let recent = userLeaves.slice(-5).reverse();
+    document.getElementById("dashboard").innerHTML = `
+      <div class="dashboard-grid">
+        <div class="stat-card"><h4>Sisa Cuti Tahunan</h4><div class="stat-value">${sisaCuti}</div></div>
+        <div class="stat-card"><h4>Cuti Digunakan</h4><div class="stat-value">${digunakan}</div></div>
+        <div class="stat-card"><h4>Cuti Pending</h4><div class="stat-value">${pending}</div></div>
+        <div class="stat-card"><h4>Cuti Hari Ini</h4><div class="stat-value">${cutiHariIni}</div></div>
+      </div>
+      <h4>Pengajuan Cuti Terbaru</h4>
+      <table>
+      <tr><th>Tanggal Pengajuan</th><th>Jenis</th><th>Mulai</th><th>Selesai</th><th>Durasi</th><th>Status</th></tr>
+      ${recent.length? recent.map(leaveRow).join("") : 
+         `<tr><td colspan=6 style="text-align:center;color:#aaa">Belum ada pengajuan cuti</td></tr>`}
+      </table>
+    `;
+}
+
+// Ajukan cuti
+function showAjukan() {
+    document.getElementById("ajukan").innerHTML = `
+      <h4>Form Pengajuan Cuti</h4>
+      <form id="leaveForm">
+        <label>Jenis Cuti *</label>
+        <select id="leaveType" required>
+            <option value="">Pilih jenis cuti</option>
+            <option value="Cuti Tahunan">Cuti Tahunan</option>
+            <option value="Cuti Sakit">Cuti Sakit</option>
+            <option value="Cuti Melahirkan">Cuti Melahirkan</option>
+            <option value="Cuti Menikah">Cuti Menikah</option>
+            <option value="Cuti Ibadah">Cuti Ibadah</option>
+        </select>
+        <label>Tanggal Mulai *</label>
+        <input type="date" id="startDate" required>
+        <label>Tanggal Selesai *</label>
+        <input type="date" id="endDate" required>
+        <label>Durasi (hari kerja)</label>
+        <input type="number" id="duration" readonly style="background:#f7f7fa">
+        <label>Alasan Cuti *</label>
+        <textarea id="reason" required placeholder="Alasan cuti"></textarea>
+        <label>Nama Pengganti Sementara</label>
+        <input type="text" id="replacement">
+        <label>Kontak Darurat Saat Cuti</label>
+        <input type="tel" id="contact">
+        <button type="submit">Ajukan Cuti</button>
+      </form>
+      <div id="notifArea"></div>
+    `;
+    // Kalkulasi otomatis durasi hari kerja
+    document.getElementById('startDate').onchange = calculateDuration;
+    document.getElementById('endDate').onchange = calculateDuration;
+    document.getElementById("leaveForm").onsubmit = function(e){
+        e.preventDefault();
+        const s = document.getElementById('startDate').value;
+        const eD = document.getElementById('endDate').value;
+        let duration = Number(document.getElementById('duration').value);
+        if (!s || !eD || !duration) return showNotif("Pastikan isian benar!","error");
+        let leave = {
+            id: Date.now(),
+            username: loggedInUser.username,
+            submissionDate: todayStr(),
+            type: document.getElementById('leaveType').value,
+            startDate: s,
+            endDate: eD,
+            duration: duration,
+            reason: document.getElementById('reason').value,
+            replacement: document.getElementById('replacement').value,
+            contact: document.getElementById('contact').value,
+            status: 'Pending',
+            approvedBy: '-'
+        };
+        // Validasi cuti tahunan maksimal 12 hari setahun
+        let used = leaves.filter(l=>l.username===loggedInUser.username && l.status=="Approved").reduce((a,b)=>a+Number(b.duration),0);
+        if (leave.type=="Cuti Tahunan" && used+duration>12)
+          return showNotif("Cuti tahunan Anda telah habis!","error");
+        leaves.push(leave); saveLeaves();
+        showNotif("Pengajuan cuti berhasil dikirim!","success");
+        document.getElementById("leaveForm").reset();
+        document.getElementById("duration").value="";
+        showDashboard(); showRiwayat();
+    }
+}
+
+// Riwayat cuti
+function showRiwayat() {
+    let userLeaves = leaves.filter(l=>l.username===loggedInUser.username);
+    document.getElementById("riwayat").innerHTML = `
+      <h4>Riwayat Pengajuan Cuti Saya</h4>
+      <table>
+      <tr><th>No</th><th>Tgl</th><th>Jenis</th><th>Periode</th><th>Durasi</th><th>Alasan</th><th>Status</th><th>Disetujui oleh</th></tr>
+      ${userLeaves.length? userLeaves.map((l,i)=>`
+      <tr>
+        <td>${i+1}</td><td>${l.submissionDate}</td><td>${l.type}</td>
+        <td>${l.startDate} - ${l.endDate}</td><td>${l.duration} hari</td>
+        <td>${l.reason}</td>
+        <td><span class="status-badge status-${l.status.toLowerCase()}">${l.status}</span></td>
+        <td>${l.approvedBy}</td>
+      </tr>`).join("") : 
+      `<tr><td colspan=8 style="text-align:center;color:#777">Belum ada riwayat cuti</td></tr>`
+      }
+      </table>
+    `;
+}
+
+// Admin: approval cuti
+function showApproval() {
+    let pendingLeaves = leaves.filter(l=>l.status=="Pending");
+    document.getElementById("approval").innerHTML = `
+      <h4>Persetujuan Cuti Karyawan</h4>
+      <table>
+      <tr><th>No</th><th>Nama</th><th>Jenis</th><th>Periode</th><th>Durasi</th><th>Alasan</th><th>Status</th><th>Aksi</th></tr>
+      ${pendingLeaves.length?
+        pendingLeaves.map((l,i)=>`
+        <tr>
+          <td>${i+1}</td><td>${l.username}</td><td>${l.type}</td>
+          <td>${l.startDate} - ${l.endDate}</td>
+          <td>${l.duration} hari</td>
+          <td>${l.reason}</td>
+          <td><span class="status-badge status-pending">Pending</span></td>
+          <td>
+            <button class="action-btn btn-approve" onclick="approveLeave(${l.id})">Setujui</button>
+            <button class="action-btn btn-reject" onclick="rejectLeave(${l.id})">Tolak</button>
+          </td>
+        </tr>`).join("")
+        : `<tr><td colspan=8 style="text-align:center;color:#aaa">Tidak ada cuti menunggu persetujuan</td></tr>`
+      }
+      </table>
+    `;
+}
+
+// Fitur pendukung
+function switchTab(tab, btn){
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".tab-content").forEach(t=>t.classList.remove("active"));
+    document.getElementById(tab).classList.add("active");
+}
+function todayStr(){ let d=new Date();return d.toISOString().substr(0,10);}
+function leaveRow(leave){ 
+    return `<tr>
+        <td>${leave.submissionDate}</td>
+        <td>${leave.type}</td>
+        <td>${leave.startDate}</td>
+        <td>${leave.endDate}</td>
+        <td>${leave.duration} hari</td>
+        <td><span class="status-badge status-${leave.status.toLowerCase()}">${leave.status}</span></td>
+    </tr>`;}
+function inDateRange(now, s, e){ return now>=s && now<=e; }
+function calculateDuration() {
+    let s = new Date(document.getElementById('startDate').value);
+    let e = new Date(document.getElementById('endDate').value);
+    let dur=0; if(s && e && s<=e) {
+        let t = new Date(s);
+        while (t<=e) { if(t.getDay()!=0&&t.getDay()!=6) dur++; t.setDate(t.getDate()+1);}
+    }
+    document.getElementById('duration').value = dur;
+}
+function showNotif(msg, type){
+    document.getElementById("notifArea").innerHTML = `<div style="background:${type=='error'?'#ffdada':'#eaffd8'};color:${type=='error'?'#cc4141':'#28962f'};padding:10px 18px;border-radius:7px;margin-top:10px">${msg}</div>`;
+    setTimeout(()=>{document.getElementById("notifArea").innerHTML=""}, 2400);
+}
+window.approveLeave = function(id){
+    let lv = leaves.find(l=>l.id==id);
+    if(lv){ lv.status='Approved'; lv.approvedBy=loggedInUser.username; saveLeaves(); showApproval(); showDashboard();}
+}
+window.rejectLeave = function(id){
+    let lv = leaves.find(l=>l.id==id);
+    if(lv){ lv.status='Rejected'; lv.approvedBy=loggedInUser.username; saveLeaves(); showApproval(); showDashboard();}
+}
+
+// MULAI: login/app
+if(loggedInUser) showApp(); else showLogin();
+
+</script>
+</body>
+</html>
